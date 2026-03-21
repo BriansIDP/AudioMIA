@@ -116,6 +116,8 @@ def prediction_step(args, model, processor, audiopath, prompt, return_dict_in_ge
                 metrics_dict["mod_renyi_05"], metrics_dict["mod_renyi_2"], metrics_dict["sequence_sm_entropy"], metrics_dict["sm_entropy"],
                 metrics_dict["sequence_sm_entropy"], metrics_dict["sm_entropy"]
             )
+            text = processor.decode(text_ids_generated, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+            pred["pred"] = text
     return pred
 
 if __name__ == "__main__":

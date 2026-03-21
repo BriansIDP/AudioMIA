@@ -36,7 +36,7 @@ def get_meta_metrics(input_ids, probabilities, log_probabilities, q=2.0, r=1.0):
         renyi_2.append(renyi_2_)
 
         max_p = token_log_probs.max().item()
-        vals = token_log_probs[token_log_probs != token_log_probs.max()]  
+        vals = token_log_probs[token_log_probs != token_log_probs.max()]
 
         if vals.numel() == 0:
             second_p = max_p
