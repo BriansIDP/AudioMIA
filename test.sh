@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=1
 
 pip install soundfile
 pip install numpy==1.26.4
@@ -13,5 +13,5 @@ python inference.py \
     --datapath data/per_audio_testset_small.json \
     --return_logits true \
     --lora_ckpt $ckpt \
-    --from_audio true \
+    --from_audio false \
     --output_dir $expdir \
