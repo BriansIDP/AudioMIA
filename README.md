@@ -14,20 +14,23 @@ Save the downloaded model under `exp/qwen25_omni_sft_out`
 ## Inference shadow model for MIA
 `test.sh`
 
-## Results on Full Test Set
-| Method | AUROC | TPR @ Low FPR |
-|---|---:|---:|
-| PPL | 0.499092 | 0.050000 |
-| Min-5.0% Prob | 0.510956 | 0.045556 |
-| Entropy | 0.499769 | 0.050556 |
-| Max Prob Gap | 0.492340 | 0.052222 |
-| Max-5.0% Renyi 0.5 | 0.501353 | 0.044444 |
-| Max-5.0% Renyi 1.0 | 0.506644 | 0.037778 |
-| Max-5.0% Renyi 2.0 | 0.509770 | 0.041111 |
-| Max-5.0% Renyi infinity | 0.510956 | 0.045556 |
-| Max Sharma-Mittal | 0.511491 | 0.049444 |
-| Min Sharma-Mittal | __0.514077__ | __0.061667__ |
-| Mean Sharma-Mittal | 0.503708 | 0.049444 |
-| sequence Sharma-Mittal | 0.504818 | 0.045556 |
+## Results on Small Test Set (1000 samples, 500 +ve 500 -ve)
 
-## Results on Small Test Set
+| Method | Audio Tokens | Audio Tokens | Generated Text | Generated Text |
+|---|---:|---:| ---:|---:|
+|  | AUROC | TPR @ 5% FPR | AUROC | TPR @ 5% FPR |
+| PPL | 0.4872 | 0.064 | 0.5091 | 0.054 |
+| Min-30.0% Prob | 0.4836 | 0.056 | 0.5121 | 0.052 |
+| Max Prob Gap | 0.4909 | 0.048 | 0.4959 | 0.052 |
+| Max-0% Renyi 0.5 | 0.5261 | 0.068 | 0.5038 | 0.042 |
+| Max-0% Renyi 1.0 (Entropy) | 0.5238 | 0.068 | 0.5124 | 0.036 |
+| Max-0% Renyi 2.0 | __0.5296__ | 0.074 | 0.5144 | 0.046 |
+| Max-0% Renyi infinity (Max Prob) | 0.5097 | __0.090__ | 0.5219 | 0.080 |
+| Max-5% Renyi 0.5 | 0.5022 | 0.062 | 0.4984 | 0.054 |
+| Max-5% Renyi 1.0 (Entropy) | 0.4883 | 0.058 | 0.5067 | 0.052 |
+| Max-5% Renyi 2.0 | 0.4827 | 0.052 | 0.5102 | 0.052 |
+| Max-5% Renyi infinity (Max Prob) | 0.4791 | 0.052 | 0.5081 | 0.048 |
+| Max Sharma-Mittal | 0.4986 | 0.058 | --- | --- |
+| Min Sharma-Mittal | 0.5185 | 0.040 | --- | --- |
+| Mean Sharma-Mittal | 0.4894 | 0.050 | --- | --- |
+| sequence Sharma-Mittal | 0.4937 | 0.048 | --- | --- |
