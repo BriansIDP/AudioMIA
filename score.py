@@ -29,7 +29,10 @@ for datapiece in data:
         all_metrics[metric].append(value)
 
 results = {}
+categorised_results = {}
 for metric, values in all_metrics.items():
+    if metric == "pred":
+        continue
     score = roc_auc_score(labels, values)
     tpr_at_low_fpr = get_tpr_at_fpr(labels, values)
     print("AUROC {}:".format(metric), score)
