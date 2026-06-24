@@ -58,6 +58,9 @@ class ShadowDataset(Dataset):
         audiopath = item["audio"]
         question = item["question"]
         answer = item["answer"]
+        purpose = ""
+        if "type" in item and item["type"] == "probe":
+            purpose = "probe"
         conversation = [
             {
                 "role": "system",
@@ -79,14 +82,17 @@ class ShadowDataset(Dataset):
                 ],
             },
         ]
-        return conversation
+        return conversation, purpose
 
-    def _build_prompt_and_full_text(self, msgs: List[Dict[str, str]], tokenizer) -> (str, str):
+    def _build_prompt_and_full_text(self, msgs: List[Dict[str, str]], tokenizer, cut_audio = False) -> (str, str):
         # ensure there's at least a terminal assistant; if not, synthesize empty assistant
         last_is_assistant = (len(msgs) > 0 and msgs[-1]["role"] == "assistant")
         if not last_is_assistant:
             msgs = msgs + [{"role": "assistant", "content": ""}]
         audios, _, _ = process_mm_info(msgs, use_audio_in_video=True)
+        if cut_audio:
+            cutoff = self.tokenizer.feature_extractor.sampling_rate * 10
+            audios = [audio[:cutoff] for audio in audios]
 
         prompt_only_text = tokenizer.apply_chat_template(
             msgs[:-1], tokenize=False, add_generation_prompt=True
@@ -125,8 +131,11 @@ class ShadowDataset(Dataset):
         }
 
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-        sample = self.data[idx]
-        datapiece = self._build_prompt_and_full_text(sample, self.tokenizer)
+        sample, purpose = self.data[idx]
+        cut_audio = False
+        if purpose == "probe":
+            cut_audio = True
+        datapiece = self._build_prompt_and_full_text(sample, self.tokenizer, cut_audio=cut_audio)
         return datapiece
 
     def __len__(self) -> int:

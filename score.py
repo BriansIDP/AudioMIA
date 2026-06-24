@@ -2,34 +2,195 @@ import json
 import sys, os
 from sklearn.metrics import roc_auc_score, roc_curve
 import numpy as np
+from rouge_score import rouge_scorer
+from tqdm import tqdm
+# from bert_score import score
+
+
+scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+
+infile = sys.argv[1]
+useref = False
+per_audio = True
+use_max = True
+refdata = None
+use_ratio = False
+score_topk = 6
+
+if len(sys.argv) > 2:
+    reffile = sys.argv[2]
+    with open(reffile) as fin:
+        refdata = json.load(fin)
+outfile = infile.replace(".json", "_results.json")
+
+def compare_with_orig(metric, orig_metric):
+    if use_ratio:
+        return metric / (orig_metric + 1e-5)
+    else:
+        return metric - orig_metric
+
+
+def process_score(scores):
+    # if score_topk > 0:
+    #     return 1 - np.sort(scores)[:score_topk].sum() / score_topk
+    # else:
+    return 1 - np.mean(scores)
 
 
 def get_tpr_at_fpr(y_true, y_scores, target_fpr=0.05):
     # Get the FPR and TPR at various thresholds
     fpr, tpr, thresholds = roc_curve(y_true, y_scores)
-    
+
     # Find the index where FPR is closest to or just under the target
     idx = np.where(fpr <= target_fpr)[0][-1]
     return tpr[idx]
 
-infile = sys.argv[1]
-outfile = infile.replace(".json", "_results.json")
 
 with open(infile) as fin:
     data = json.load(fin)
 
+ref_all_metrics = {}
+
+if refdata is not None:
+    for datapiece in tqdm(refdata):
+        key = datapiece["audio"] + datapiece["question"]
+        ref_all_metrics[key] = {}
+        speed_factor = datapiece["pred"].pop("speed_factor", None)
+        noise_snr = datapiece["pred"].pop("noise_snr", None)
+        for metric, value in datapiece["pred"].items():
+            if metric == "pred" and len(value) > 1:
+                if useref:
+                    ref_all_metrics[key]["rouge_1"] = process_score(datapiece["precompute"]["rouge_1_reftext"])
+                    ref_all_metrics[key]["rouge_2"] = process_score(datapiece["precompute"]["rouge_2_reftext"])
+                    ref_all_metrics[key]["rouge_l"] = process_score(datapiece["precompute"]["rouge_l_reftext"])
+                    ref_all_metrics[key]["bert_P"] = process_score(datapiece["precompute"]["bert_P_reftext"])
+                    ref_all_metrics[key]["bert_R"] = process_score(datapiece["precompute"]["bert_R_reftext"])
+                    ref_all_metrics[key]["bert_F1"] = process_score(datapiece["precompute"]["bert_F1_reftext"])
+                else:
+                    ref_all_metrics[key]["rouge_1"] = process_score(datapiece["precompute"]["rouge_1_predtext"])
+                    ref_all_metrics[key]["rouge_2"] = process_score(datapiece["precompute"]["rouge_2_predtext"])
+                    ref_all_metrics[key]["rouge_l"] = process_score(datapiece["precompute"]["rouge_l_predtext"])
+                    ref_all_metrics[key]["bert_P"] = process_score(datapiece["precompute"]["bert_P_predtext"])
+                    ref_all_metrics[key]["bert_R"] = process_score(datapiece["precompute"]["bert_R_predtext"])
+                    ref_all_metrics[key]["bert_F1"] = process_score(datapiece["precompute"]["bert_F1_predtext"])
+            else:
+                value = min(100000, max(-10000, value))
+                ref_all_metrics[key][metric] = value
+
 labels = []
 all_metrics = {}
+all_metrics_audio = {}
+audio_to_label = {}
 
-for datapiece in data:
+for idx, datapiece in enumerate(tqdm(data)):
     labels.append(datapiece["label"])
+    if datapiece["audio"] not in audio_to_label:
+        audio_to_label[datapiece["audio"]] = datapiece["label"]
+    speed_factor = datapiece["pred"].pop("speed_factor", None)
+    noise_snr = datapiece["pred"].pop("noise_snr", None)
     for metric, value in datapiece["pred"].items():
-        if metric not in all_metrics:
-            all_metrics[metric] = []
-        all_metrics[metric].append(value)
+        key = datapiece["audio"] + datapiece["question"]
+        audiokey = datapiece["audio"]
+        if metric == "pred":
+            if len(value) > 1:
+                reftext = None
+                if "rouge_1" not in all_metrics:
+                    all_metrics["rouge_1"] = []
+                    all_metrics["rouge_2"] = []
+                    all_metrics["rouge_l"] = []
+                    all_metrics["bert_P"] = []
+                    all_metrics["bert_R"] = []
+                    all_metrics["bert_F1"] = []
+                rouge_1 = process_score(datapiece["precompute"]["rouge_1_reftext"]) if useref else process_score(datapiece["precompute"]["rouge_1_predtext"])
+                rouge_2 = process_score(datapiece["precompute"]["rouge_2_reftext"]) if useref else process_score(datapiece["precompute"]["rouge_2_predtext"])
+                rouge_l = process_score(datapiece["precompute"]["rouge_l_reftext"]) if useref else process_score(datapiece["precompute"]["rouge_l_predtext"])
+                bert_P = process_score(datapiece["precompute"]["bert_P_reftext"]) if useref else process_score(datapiece["precompute"]["bert_P_predtext"])
+                bert_R = process_score(datapiece["precompute"]["bert_R_reftext"]) if useref else process_score(datapiece["precompute"]["bert_R_predtext"])
+                bert_F1 = process_score(datapiece["precompute"]["bert_F1_reftext"]) if useref else process_score(datapiece["precompute"]["bert_F1_predtext"])
+                if per_audio:
+                    if audiokey not in all_metrics_audio:
+                        all_metrics_audio[audiokey] = {}
+                    if "rouge_1" not in all_metrics_audio[audiokey]:
+                        all_metrics_audio[audiokey]["rouge_1"] = []
+                        all_metrics_audio[audiokey]["rouge_2"] = []
+                        all_metrics_audio[audiokey]["rouge_l"] = []
+                        all_metrics_audio[audiokey]["rouge"] = []
+                        all_metrics_audio[audiokey]["bert_P"] = []
+                        all_metrics_audio[audiokey]["bert_R"] = []
+                        all_metrics_audio[audiokey]["bert_F1"] = []
+                        all_metrics_audio[audiokey]["bert"] = []
+                    if refdata is not None and "rouge_1" in ref_all_metrics[key]:
+                        all_metrics_audio[audiokey]["rouge_1"].append(compare_with_orig(rouge_1, ref_all_metrics[key]["rouge_1"]))
+                        all_metrics_audio[audiokey]["rouge_2"].append(compare_with_orig(rouge_2, ref_all_metrics[key]["rouge_2"]))
+                        all_metrics_audio[audiokey]["rouge_l"].append(compare_with_orig(rouge_l, ref_all_metrics[key]["rouge_l"]))
+                        all_metrics_audio[audiokey]["rouge"].append(all_metrics_audio[audiokey]["rouge_1"][-1]+all_metrics_audio[audiokey]["rouge_2"][-1]+all_metrics_audio[audiokey]["rouge_l"][-1])
+                        all_metrics_audio[audiokey]["bert_P"].append(compare_with_orig(bert_P, ref_all_metrics[key]["bert_P"]))
+                        all_metrics_audio[audiokey]["bert_R"].append(compare_with_orig(bert_R, ref_all_metrics[key]["bert_R"]))
+                        all_metrics_audio[audiokey]["bert_F1"].append(compare_with_orig(bert_F1, ref_all_metrics[key]["bert_F1"]))
+                        all_metrics_audio[audiokey]["bert"].append(all_metrics_audio[audiokey]["bert_P"][-1]+all_metrics_audio[audiokey]["bert_R"][-1]+all_metrics_audio[audiokey]["bert_F1"][-1])
+                    else:
+                        all_metrics_audio[audiokey]["rouge_1"].append(rouge_1)
+                        all_metrics_audio[audiokey]["rouge_2"].append(rouge_2)
+                        all_metrics_audio[audiokey]["rouge_l"].append(rouge_l)
+                        all_metrics_audio[audiokey]["bert_P"].append(bert_P)
+                        all_metrics_audio[audiokey]["bert_R"].append(bert_R)
+                        all_metrics_audio[audiokey]["bert_F1"].append(bert_F1)
+                if refdata is not None and "rouge_1" in ref_all_metrics[key]:
+                    all_metrics["rouge_1"].append(compare_with_orig(rouge_1, ref_all_metrics[key]["rouge_1"]))
+                    all_metrics["rouge_2"].append(compare_with_orig(rouge_2, ref_all_metrics[key]["rouge_2"]))
+                    all_metrics["rouge_l"].append(compare_with_orig(rouge_l, ref_all_metrics[key]["rouge_l"]))
+                    all_metrics["bert_P"].append(compare_with_orig(bert_P, ref_all_metrics[key]["bert_P"]))
+                    all_metrics["bert_R"].append(compare_with_orig(bert_R, ref_all_metrics[key]["bert_R"]))
+                    all_metrics["bert_F1"].append(compare_with_orig(bert_F1, ref_all_metrics[key]["bert_F1"]))
+                else:
+                    all_metrics["rouge_1"].append(rouge_1)
+                    all_metrics["rouge_2"].append(rouge_2)
+                    all_metrics["rouge_l"].append(rouge_l)
+                    all_metrics["bert_P"].append(bert_P)
+                    all_metrics["bert_R"].append(bert_R)
+                    all_metrics["bert_F1"].append(bert_F1)
+        else:
+            if metric not in all_metrics:
+                all_metrics[metric] = []
+            if per_audio:
+                if audiokey not in all_metrics_audio:
+                    all_metrics_audio[audiokey] = {}
+                if metric not in all_metrics_audio[audiokey]:
+                    all_metrics_audio[audiokey][metric] = []
+            value = min(100000, max(-10000, value))
+            if key in ref_all_metrics and metric in ref_all_metrics[key]:
+                if ref_all_metrics[key][metric] == 0:
+                    ref_all_metrics[key][metric] += 1e-5
+                if per_audio:
+                    all_metrics_audio[audiokey][metric].append(compare_with_orig(value, ref_all_metrics[key][metric]))
+                all_metrics[metric].append(compare_with_orig(value, ref_all_metrics[key][metric]))
+            else:
+                if per_audio:
+                    all_metrics_audio[audiokey][metric].append(value)
+                all_metrics[metric].append(value)
+
+all_metrics_audio_mean = {}
+all_metrics_audio_max = {}
+if per_audio:
+    labels = []
+    for audiokey, metrics in all_metrics_audio.items():
+        labels.append(audio_to_label[audiokey])
+        for metric, values in metrics.items():
+            if metric not in all_metrics_audio_mean:
+                all_metrics_audio_mean[metric] = []
+                all_metrics_audio_max[metric] = []
+            all_metrics_audio_mean[metric].append(sum(values) / len(values))
+            if score_topk > 0:
+                local_score_topk = min(len(values), score_topk)
+                all_metrics_audio_max[metric].append(np.sort(values)[-local_score_topk:].sum() / local_score_topk)
+            else:
+                all_metrics_audio_max[metric].append(min(values))
+    all_metrics = all_metrics_audio_max if use_max else all_metrics_audio_mean
+    if score_topk > 0:
+        all_metrics = all_metrics_audio_max
 
 results = {}
-categorised_results = {}
+
 for metric, values in all_metrics.items():
     if metric == "pred":
         continue
@@ -37,7 +198,12 @@ for metric, values in all_metrics.items():
     tpr_at_low_fpr = get_tpr_at_fpr(labels, values)
     print("AUROC {}:".format(metric), score)
     print("TPR @5% FPR {}:".format(metric), tpr_at_low_fpr)
+    print("-"*89)
     results[metric] = {"auroc": score, "tpr_low_fpr": tpr_at_low_fpr}
+    # except:
+    #     print("*"*89)
+    #     print("Metric {} FAILED".format(metric))
+    #     print("*"*89)
 
 with open(outfile, "w") as fout:
     json.dump(results, fout, indent=4)

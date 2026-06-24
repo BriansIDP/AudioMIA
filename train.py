@@ -74,8 +74,17 @@ def build_model(args):
                 output.requires_grad_(True)
             model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
 
-    lora_cfg = default_lora_config(r=args.lora_r, alpha=args.lora_alpha, dropout=args.lora_dropout)
-    model = get_peft_model(model, lora_cfg)
+    # lora_cfg = default_lora_config(r=args.lora_r, alpha=args.lora_alpha, dropout=args.lora_dropout)
+    modules_to_save = ["audio_tower.proj"]
+    lora_config = LoraConfig(
+        r=args.lora_r,
+        lora_alpha=args.lora_alpha,
+        target_modules=["q_proj", "k_proj", "v_proj"], # find_all_linear_names(model),
+        lora_dropout=args.lora_dropout,
+        task_type="CAUSAL_LM",
+        modules_to_save=modules_to_save,
+    )
+    model = get_peft_model(model, lora_config)
     model.print_trainable_parameters()
     return model
 
@@ -99,7 +108,7 @@ def parse_args():
     p.add_argument("--gradient_accumulation_steps", type=int, default=8)
     p.add_argument("--learning_rate", type=float, default=2e-4)
     p.add_argument("--weight_decay", type=float, default=0.0)
-    p.add_argument("--num_train_epochs", type=float, default=3)
+    p.add_argument("--num_train_epochs", type=float, default=10)
     p.add_argument("--lr_scheduler_type", type=str, default="cosine")
     p.add_argument("--warmup_ratio", type=float, default=0.03)
     p.add_argument("--logging_steps", type=int, default=10)
@@ -166,6 +175,7 @@ def main():
         max_grad_norm=1.0,
         optim="adamw_torch",
         remove_unused_columns=False,
+        dataloader_num_workers=0,
     )
     train_args.gradient_checkpointing_kwargs={"use_reentrant": False}
     train_args.do_validation = True

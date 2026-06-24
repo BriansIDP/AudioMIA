@@ -95,6 +95,13 @@ HDFS_BASE_PATH = "hdfs://harunava/home/byte_malia_gcp_aiic/user/guangzhisun/mode
 
 TRAINER_STATE_NAME = "trainer_state.json"
 
+def logging(s, logfile, logging_=True, log_=True):
+    if logging_:
+        print(s)
+    if log_:
+        with open(logfile, 'a+') as f_log:
+            f_log.write(s + '\n')
+
 
 def extract_characters_regex(s):
     s = s.strip()
@@ -166,7 +173,9 @@ class QwenOmniTrainer(Trainer):
             torch.distributed.reduce(val_loss, 0)
             val_loss = val_loss.item() / dist.get_world_size()
             if DIST_ENV.rank == 0:
+                logfile = os.path.join(run_dir, "log.txt")
                 print("Validation Loss: {:.5f}".format(val_loss))
+                logging("Validation Loss: {:.5f}".format(val_loss), logfile)
 
         self.save_model(output_dir, _internal_call=True)
 
@@ -209,12 +218,6 @@ class QwenOmniTrainer(Trainer):
 
         if self.args.push_to_hub:
             self._push_from_checkpoint(output_dir)
-
-        # Maybe delete some older checkpoints.
-        if self.args.should_save:
-            # Solely rely on numerical checkpoint id for rotation.
-            # mtime is not reliable especially on some fuse fs in cloud environments.
-            self._rotate_checkpoints(use_mtime=False, output_dir=run_dir)
 
     def calc_dpo_loss(self, policy_input, policy_target, ref_input, ce_loss=None, beta=0.1):
         lm_head = self.model.lm_head.weight
@@ -369,7 +372,7 @@ class QwenOmniTrainer(Trainer):
                 generated_tokens = self.model.generate(**inputs)
                 preds = self.tokenizer.decode(generated_tokens[0][inputs["input_ids"].size(1):], skip_special_tokens=True, clean_up_tokenization_spaces=False)
                 scores = scorer.score(preds, refanswer)
-                total_hits += scores["rougeL"].fmeasure
+                total_hits += scores["rougeL"].precision
                 total_tokens += 1
         else:
             for inputs in test_dataloader:
@@ -377,6 +380,6 @@ class QwenOmniTrainer(Trainer):
                 generated_tokens = self.model.generate(**inputs)
                 preds = self.tokenizer.decode(generated_tokens[0][inputs["input_ids"].size(1):], skip_special_tokens=True, clean_up_tokenization_spaces=False)
                 scores = scorer.score(preds, refanswer)
-                total_hits += scores["rougeL"].fmeasure
+                total_hits += scores["rougeL"].precision
                 total_tokens += 1
         return torch.tensor(total_hits/total_tokens*100).to(inputs["input_ids"].device)
