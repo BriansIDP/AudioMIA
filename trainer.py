@@ -20,7 +20,6 @@ from torch.utils.data import DataLoader, Sampler, RandomSampler
 from packaging import version
 from transformers import Trainer
 from transformers.cache_utils import Cache
-from qwenvl.data.modality_sampler import WeightedRoundRobinBatchSampler
 from transformers.integrations.deepspeed import is_deepspeed_available
 from transformers.utils import (
     is_torch_compile_available,
@@ -86,7 +85,6 @@ except:
     pass
 
 import re
-from liger_kernel.chunked_loss.dpo_loss import LigerFusedLinearDPOLoss
 
 from rouge_score import rouge_scorer
             
@@ -143,7 +141,6 @@ class QwenOmniTrainer(Trainer):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self.dpo_loss_fct = LigerFusedLinearDPOLoss()
 
     def _get_train_sampler(self, train_dataset=None) -> Optional[torch.utils.data.Sampler]:
         if train_dataset is None:
@@ -219,16 +216,6 @@ class QwenOmniTrainer(Trainer):
         if self.args.push_to_hub:
             self._push_from_checkpoint(output_dir)
 
-    def calc_dpo_loss(self, policy_input, policy_target, ref_input, ce_loss=None, beta=0.1):
-        lm_head = self.model.lm_head.weight
-        dpo_loss, (chosen_logp, reject_logp, chosen_logit, reject_logit, chosen_nll_loss, chosen_rewards, reject_rewards) = self.dpo_loss_fct(lm_head, policy_input, policy_target, ref_input=ref_input, ref_weight=lm_head)
-        if ce_loss is not None:
-            loss = dpo_loss + beta * ce_loss
-        else:
-            loss = dpo_loss
-        print(f"RANK {dist.get_rank()} chosen: {chosen_rewards.item()}, reject: {reject_rewards.item()}")
-        return (loss, dpo_loss, chosen_rewards, reject_rewards)
-
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         """
         How the loss is computed by Trainer. By default, all models return the loss in the first element.
@@ -246,12 +233,6 @@ class QwenOmniTrainer(Trainer):
         if train_type == "sft":
             # print(inputs["input_ids"].size())
             outputs = model(**inputs)
-        elif train_type == "dpo":
-            policy_input, policy_target = model(**inputs)
-            with self.accelerator.unwrap_model(self.model).disable_adapter():
-                with torch.no_grad():
-                    reference_input, reference_target = model(**inputs)
-            outputs = self.calc_dpo_loss(policy_input, policy_target, reference_input)
         else:
             raise NotImplementedError
 

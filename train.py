@@ -39,6 +39,7 @@ def str2bool(v: str) -> bool:
 def load_tokenizer(args):
     processor = Qwen2_5OmniProcessor.from_pretrained(
         args.model_name_or_path,
+        cache_dir="/research/milsrg1/user_workspace/gs534/cache",
     )
     return processor
 
@@ -55,13 +56,14 @@ def default_lora_config(r: int = 32, alpha: int = 64, dropout: float = 0.05) -> 
 
 
 def build_model(args):
-    attn_impl = "flash_attention_2" if args.flash_attn else "eager"
+    attn_impl = "eager"
     model = Qwen2_5OmniThinkerForConditionalGeneration.from_pretrained(
         "Qwen/Qwen2.5-Omni-7B",
         device_map=None,
         torch_dtype=torch.bfloat16,
         attn_implementation=attn_impl,
         trust_remote_code=True,
+        cache_dir="/research/milsrg1/user_workspace/gs534/cache"
     )
     model.config.use_cache = False
 
