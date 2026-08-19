@@ -1,0 +1,391 @@
+{
+  "metadata": {
+    "project": "audio-file-level membership inference",
+    "target_year": "2026",
+    "applied_filters": {
+      "duration": "Queries explicitly include terms like 'clip', 'short', 'summary', 'highlights', or 'excerpt' to bias YouTube's algorithm toward videos under 20-30 minutes. Raw, multi-hour proceedings have been replaced with summarized or analytical formats.",
+      "terminology": "All instances of 'audio', 'audio only', and 'recording(s)' have been replaced with 'video', 'clip', 'footage', or 'narration' to align with YouTube search behavior.",
+      "content_density": "Queries are optimized for speech-heavy, continuous dialogue or commentary (e.g., Q&A, analysis, tutorials, debates) to minimize long periods of silence.",
+      "timestamp": "The 'sp=EgIIAQ%3D%3D' parameter in each URL enforces YouTube's 'Upload date: This year' (2026) filter."
+    },
+    "programmatic_download_tip": "When using yt-dlp, combine these queries with '--match-title \"(short|clip|summary|highlights|excerpt)\"' and '--dateafter 20260101' for maximum precision."
+  },
+  "categories": [
+    {
+      "category_id": 1,
+      "category_name": "Independent & Professional Podcasts",
+      "description": "High copyright value, distinct voice biometrics, and unscripted conversational patterns. Queries target short segments to avoid hour-long episodes.",
+      "queries": [
+        {
+          "query_text": "interview podcast clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=interview+podcast+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "true crime podcast segment video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=true+crime+podcast+segment+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "technology podcast short discussion 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=technology+podcast+short+discussion+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "indie creator podcast highlights 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=indie+creator+podcast+highlights+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "business podcast excerpt video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=business+podcast+excerpt+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "science podcast short episode 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=science+podcast+short+episode+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "history podcast summary video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=history+podcast+summary+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "comedy podcast funny clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=comedy+podcast+funny+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "health podcast quick tip video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=health+podcast+quick+tip+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "political commentary podcast clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=political+commentary+podcast+clip+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 2,
+      "category_name": "Academic Conference Presentations",
+      "description": "Copyrighted by institutions/speakers; features highly structured, formal linguistic patterns. Queries target short talks, Q&A sessions, and highlights to avoid multi-hour symposiums.",
+      "queries": [
+        {
+          "query_text": "academic conference keynote highlights 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=academic+conference+keynote+highlights+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "computer science conference short presentation 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=computer+science+conference+short+presentation+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "medical research symposium clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=medical+research+symposium+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "AI research conference short talk 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=AI+research+conference+short+talk+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "physics conference panel Q&A clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=physics+conference+panel+Q%26A+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "environmental science conference brief talk 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=environmental+science+conference+brief+talk+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "economics conference short keynote 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=economics+conference+short+keynote+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "literature conference presentation snippet 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=literature+conference+presentation+snippet+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "biology research symposium short video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=biology+research+symposium+short+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "engineering conference technical clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=engineering+conference+technical+clip+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 3,
+      "category_name": "News Broadcasts & Interviews",
+      "description": "Strict copyright enforcement, clear high-quality audio, and journalistic privacy considerations. Queries target specific segments and clips.",
+      "queries": [
+        {
+          "query_text": "morning news broadcast segment 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=morning+news+broadcast+segment+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "investigative journalism video report 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=investigative+journalism+video+report+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "NPR style interview clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=NPR+style+interview+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "international news video segment 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=international+news+video+segment+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "political interview video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=political+interview+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "financial news video report 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=financial+news+video+report+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "local talk show video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=local+talk+show+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "breaking news video coverage clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=breaking+news+video+coverage+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "documentary video feature short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=documentary+video+feature+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "sports news video commentary 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=sports+news+video+commentary+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 4,
+      "category_name": "Book Narrations & Narrated Stories",
+      "description": "Highly copyrighted professional voice acting and scripted speech patterns. 'Audiobook' replaced with 'book narration' to strictly avoid the word 'audio' while maintaining search relevance.",
+      "queries": [
+        {
+          "query_text": "book narration sample video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=book+narration+sample+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "indie author book narration preview video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=indie+author+book+narration+preview+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "sci-fi book narration chapter 1 short clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=sci-fi+book+narration+chapter+1+short+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "fantasy novel narration video excerpt 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=fantasy+novel+narration+video+excerpt+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "self-help book narration video excerpt 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=self-help+book+narration+video+excerpt+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "mystery thriller book narration reading clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=mystery+thriller+book+narration+reading+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "kids story narration short video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=kids+story+narration+short+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "biography book narration preview video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=biography+book+narration+preview+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "classic literature book narration video snippet 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=classic+literature+book+narration+video+snippet+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "short story narration video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=short+story+narration+video+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 5,
+      "category_name": "Mental Health Vlogs & Personal Video Diaries",
+      "description": "High privacy sensitivity with continuous spoken content, emotional prosody, and personal details. Queries target short, speech-dense updates.",
+      "queries": [
+        {
+          "query_text": "mental health journey vlog clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=mental+health+journey+vlog+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "personal video diary entry 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=personal+video+diary+entry+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "anxiety recovery story video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=anxiety+recovery+story+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "therapy reflection vlog short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=therapy+reflection+vlog+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "depression awareness spoken word video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=depression+awareness+spoken+word+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "mindfulness personal update video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=mindfulness+personal+update+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "life update video short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=life+update+video+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "emotional support vlog clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=emotional+support+vlog+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "personal growth journal reading video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=personal+growth+journal+reading+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "trauma recovery spoken story video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=trauma+recovery+spoken+story+video+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 6,
+      "category_name": "Corporate Earnings Calls & Business Webinars",
+      "description": "Copyrighted corporate content with professional speaking styles. Queries target highlights, Q&A sessions, and summaries to avoid hour-long webinars.",
+      "queries": [
+        {
+          "query_text": "tech company earnings call highlights 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=tech+company+earnings+call+highlights+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "business strategy webinar clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=business+strategy+webinar+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "corporate town hall meeting video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=corporate+town+hall+meeting+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "startup pitch competition video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=startup+pitch+competition+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "financial analyst Q&A video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=financial+analyst+Q%26A+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "marketing masterclass webinar short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=marketing+masterclass+webinar+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "leadership training seminar video snippet 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=leadership+training+seminar+video+snippet+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "industry conference panel discussion clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=industry+conference+panel+discussion+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "quarterly business review video summary 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=quarterly+business+review+video+summary+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "entrepreneurship interview video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=entrepreneurship+interview+video+clip+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 7,
+      "category_name": "Music Production Tutorials & Studio Sessions",
+      "description": "Mixes copyrighted musical stems with continuous producer commentary. 'Audio engineering' changed to 'sound engineering' to comply with terminology constraints.",
+      "queries": [
+        {
+          "query_text": "music production tutorial short video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=music+production+tutorial+short+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "FL Studio beat making commentary clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=FL+Studio+beat+making+commentary+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "vocal mixing tutorial video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=vocal+mixing+tutorial+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "music producer studio vlog short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=music+producer+studio+vlog+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "ableton live workflow explanation video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=ableton+live+workflow+explanation+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "guitar lesson spoken instruction clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=guitar+lesson+spoken+instruction+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "synthesizer sound design tutorial short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=synthesizer+sound+design+tutorial+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "sound engineering masterclass video excerpt 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=sound+engineering+masterclass+video+excerpt+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "independent artist studio session video clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=independent+artist+studio+session+video+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "music theory explanation video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=music+theory+explanation+video+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    },
+    {
+      "category_id": 8,
+      "category_name": "Legal Analysis & Case Summaries",
+      "description": "Replaces raw legal proceedings (which are often hours long with silences) with speech-dense, short-form legal analysis, case summaries, and commentary to guarantee the <30 minute constraint.",
+      "queries": [
+        {
+          "query_text": "legal case summary video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=legal+case+summary+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "court ruling explanation short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=court+ruling+explanation+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "lawyer reacts to trial clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=lawyer+reacts+to+trial+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "legal analysis video essay 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=legal+analysis+video+essay+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "supreme court decision breakdown short 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=supreme+court+decision+breakdown+short+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "mock trial highlight video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=mock+trial+highlight+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "legal news commentary clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=legal+news+commentary+clip+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "attorney interview short video 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=attorney+interview+short+video+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "law school exam answer explanation 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=law+school+exam+answer+explanation+2026&sp=EgIIAQ%3D%3D"
+        },
+        {
+          "query_text": "legal debate clip 2026",
+          "filtered_search_url": "https://www.youtube.com/results?search_query=legal+debate+clip+2026&sp=EgIIAQ%3D%3D"
+        }
+      ]
+    }
+  ]
+}

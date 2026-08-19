@@ -1,0 +1,12 @@
+pip install bert_score
+pip install numpy==1.26.4
+pip install rouge-score
+pip install scikit-learn
+# python compute_scores.py exp/qwen25_omni_sft_newQA/mia_qwen25omni_generation_20_samples_minkpp_all_completion.json &
+export CUDA_VISIBLE_DEVICES=0
+python compute_scores.py exp/qwen25_omni_sft_newQA_lora_r1024_a2048_new/mia_qwen25omni_generation_10_samples_minkpp_all_origmodel.json &
+python compute_scores.py exp/qwen25_omni_sft_newQA_lora_r1024_a2048_new/mia_qwen25omni_generation_10_samples_minkpp_all.json &
+export CUDA_VISIBLE_DEVICES=1
+python compute_scores.py exp/step_audio2_sft_out_r1024_a2048_new/mia_stepaudio_generation_10_samples_minkpp_all_origmodel.json &
+python compute_scores.py exp/step_audio2_sft_out_r1024_a2048_new/mia_stepaudio_generation_10_samples_minkpp_all.json &
+wait

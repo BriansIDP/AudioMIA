@@ -109,7 +109,7 @@ def prediction_step(
     #         prompt = "Transcribe the speech to text and output the transcription."
     #     else:
     #         prompt = "You are given the beginning of an audio and rest of the audio is missing. What ELSE do you know about the speech content in the missing part of the audio?"
-
+    # prompt = "Transcribe the audio into text"
     conversation = [
         {
             "role": "system",
@@ -144,7 +144,7 @@ def prediction_step(
     audios, images, videos = process_mm_info(conversation, use_audio_in_video=USE_AUDIO_IN_VIDEO)
     if "completion" in args.metrics:
         # cutoff = audios[0].shape[0] // 3
-        cutoff = 16000 * 10
+        cutoff = int(16000 * 0.2)
         # random_start = random.randint(0, cutoff)
         audios[0] = audios[0][0:cutoff]
 
@@ -229,7 +229,7 @@ def prediction_step(
                         use_audio_in_video=USE_AUDIO_IN_VIDEO,
                         return_dict_in_generate=True,
                         output_scores=True,
-                        max_new_tokens=512,
+                        max_new_tokens=1024,
                         stopping_criteria=stopping_criteria,
                         do_sample=True if (nsamples > 1 and i > 0) else False,
                         temperature=1.0,
@@ -262,6 +262,7 @@ if __name__ == "__main__":
     args.add_argument("--change", type=str, default="none")
     args.add_argument("--speed_factor", type=float, default=1.0)
     args.add_argument("--snr_db", type=float, default=20.0)
+    args.add_argument("--othertag", type=str, default="")
 
     args = args.parse_args()
     with open(args.datapath) as fin:
@@ -297,7 +298,8 @@ if __name__ == "__main__":
             answer=datapiece["answer"],
         )
         datapiece["pred"] = pred
-        if "answer" in datapiece:
+        if "answer" in datapiece and not args.from_audio:
+            print("QUESTION:", datapiece["question"])
             print("REF:", datapiece["answer"])
             print("PRED:", pred["pred"][0])
         print("="*89)
@@ -318,5 +320,6 @@ if __name__ == "__main__":
             tag += "_{}".format(args.speed_factor)
         if "noise" in args.change:
             tag += "_{}".format(args.snr_db)
+    tag += "_{}".format(args.othertag)
     with open(os.path.join(args.output_dir, "mia_qwen25omni_{}.json".format(tag)), 'w') as fp:
         json.dump(data, fp, indent=4)

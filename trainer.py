@@ -353,6 +353,8 @@ class QwenOmniTrainer(Trainer):
                 generated_tokens = self.model.generate(**inputs)
                 preds = self.tokenizer.decode(generated_tokens[0][inputs["input_ids"].size(1):], skip_special_tokens=True, clean_up_tokenization_spaces=False)
                 scores = scorer.score(preds, refanswer)
+                print("PRED: {}".format(preds))
+                print("REF: {}".format(refanswer))
                 total_hits += scores["rougeL"].precision
                 total_tokens += 1
         else:

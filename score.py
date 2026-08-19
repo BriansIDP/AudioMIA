@@ -14,8 +14,8 @@ useref = False
 per_audio = True
 use_max = True
 refdata = None
-use_ratio = False
-score_topk = 6
+use_ratio = True
+score_topk = 10
 
 if len(sys.argv) > 2:
     reffile = sys.argv[2]
@@ -31,10 +31,12 @@ def compare_with_orig(metric, orig_metric):
 
 
 def process_score(scores):
+    distance_k = 200
     # if score_topk > 0:
     #     return 1 - np.sort(scores)[:score_topk].sum() / score_topk
     # else:
-    return 1 - np.mean(scores)
+    # return 1 - np.mean(scores)
+    return 1 - np.sort(scores)[:distance_k].sum() / distance_k
 
 
 def get_tpr_at_fpr(y_true, y_scores, target_fpr=0.05):
@@ -114,20 +116,20 @@ for idx, datapiece in enumerate(tqdm(data)):
                         all_metrics_audio[audiokey]["rouge_1"] = []
                         all_metrics_audio[audiokey]["rouge_2"] = []
                         all_metrics_audio[audiokey]["rouge_l"] = []
-                        all_metrics_audio[audiokey]["rouge"] = []
+                        # all_metrics_audio[audiokey]["rouge"] = []
                         all_metrics_audio[audiokey]["bert_P"] = []
                         all_metrics_audio[audiokey]["bert_R"] = []
                         all_metrics_audio[audiokey]["bert_F1"] = []
-                        all_metrics_audio[audiokey]["bert"] = []
+                        # all_metrics_audio[audiokey]["bert"] = []
                     if refdata is not None and "rouge_1" in ref_all_metrics[key]:
                         all_metrics_audio[audiokey]["rouge_1"].append(compare_with_orig(rouge_1, ref_all_metrics[key]["rouge_1"]))
                         all_metrics_audio[audiokey]["rouge_2"].append(compare_with_orig(rouge_2, ref_all_metrics[key]["rouge_2"]))
                         all_metrics_audio[audiokey]["rouge_l"].append(compare_with_orig(rouge_l, ref_all_metrics[key]["rouge_l"]))
-                        all_metrics_audio[audiokey]["rouge"].append(all_metrics_audio[audiokey]["rouge_1"][-1]+all_metrics_audio[audiokey]["rouge_2"][-1]+all_metrics_audio[audiokey]["rouge_l"][-1])
+                        # all_metrics_audio[audiokey]["rouge"].append(all_metrics_audio[audiokey]["rouge_1"][-1]+all_metrics_audio[audiokey]["rouge_2"][-1]+all_metrics_audio[audiokey]["rouge_l"][-1])
                         all_metrics_audio[audiokey]["bert_P"].append(compare_with_orig(bert_P, ref_all_metrics[key]["bert_P"]))
                         all_metrics_audio[audiokey]["bert_R"].append(compare_with_orig(bert_R, ref_all_metrics[key]["bert_R"]))
                         all_metrics_audio[audiokey]["bert_F1"].append(compare_with_orig(bert_F1, ref_all_metrics[key]["bert_F1"]))
-                        all_metrics_audio[audiokey]["bert"].append(all_metrics_audio[audiokey]["bert_P"][-1]+all_metrics_audio[audiokey]["bert_R"][-1]+all_metrics_audio[audiokey]["bert_F1"][-1])
+                        # all_metrics_audio[audiokey]["bert"].append(all_metrics_audio[audiokey]["bert_P"][-1]+all_metrics_audio[audiokey]["bert_R"][-1]+all_metrics_audio[audiokey]["bert_F1"][-1])
                     else:
                         all_metrics_audio[audiokey]["rouge_1"].append(rouge_1)
                         all_metrics_audio[audiokey]["rouge_2"].append(rouge_2)
@@ -158,6 +160,8 @@ for idx, datapiece in enumerate(tqdm(data)):
                 if metric not in all_metrics_audio[audiokey]:
                     all_metrics_audio[audiokey][metric] = []
             value = min(100000, max(-10000, value))
+            if "min_k_pp" in metric:
+                value = - value
             if key in ref_all_metrics and metric in ref_all_metrics[key]:
                 if ref_all_metrics[key][metric] == 0:
                     ref_all_metrics[key][metric] += 1e-5
@@ -171,9 +175,11 @@ for idx, datapiece in enumerate(tqdm(data)):
 
 all_metrics_audio_mean = {}
 all_metrics_audio_max = {}
+all_audios = []
 if per_audio:
     labels = []
     for audiokey, metrics in all_metrics_audio.items():
+        all_audios.append(audiokey)
         labels.append(audio_to_label[audiokey])
         for metric, values in metrics.items():
             if metric not in all_metrics_audio_mean:
@@ -182,14 +188,16 @@ if per_audio:
             all_metrics_audio_mean[metric].append(sum(values) / len(values))
             if score_topk > 0:
                 local_score_topk = min(len(values), score_topk)
-                all_metrics_audio_max[metric].append(np.sort(values)[-local_score_topk:].sum() / local_score_topk)
+                all_metrics_audio_max[metric].append(np.sort(values)[:local_score_topk].sum() / local_score_topk)
             else:
                 all_metrics_audio_max[metric].append(min(values))
-    all_metrics = all_metrics_audio_max if use_max else all_metrics_audio_mean
-    if score_topk > 0:
+    if score_topk > 0 or use_max:
         all_metrics = all_metrics_audio_max
+    else:
+        all_metrics = all_metrics_audio_mean
 
 results = {}
+audio_score = {}
 
 for metric, values in all_metrics.items():
     if metric == "pred":

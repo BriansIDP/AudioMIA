@@ -58,7 +58,7 @@ def default_lora_config(r: int = 32, alpha: int = 64, dropout: float = 0.05) -> 
 def build_model(args):
     attn_impl = "eager"
     model = Qwen2_5OmniThinkerForConditionalGeneration.from_pretrained(
-        "Qwen/Qwen2.5-Omni-7B",
+        args.model_name_or_path,
         device_map=None,
         torch_dtype=torch.bfloat16,
         attn_implementation=attn_impl,
@@ -77,17 +77,24 @@ def build_model(args):
             model.get_input_embeddings().register_forward_hook(make_inputs_require_grad)
 
     # lora_cfg = default_lora_config(r=args.lora_r, alpha=args.lora_alpha, dropout=args.lora_dropout)
-    modules_to_save = ["audio_tower.proj"]
-    lora_config = LoraConfig(
-        r=args.lora_r,
-        lora_alpha=args.lora_alpha,
-        target_modules=["q_proj", "k_proj", "v_proj"], # find_all_linear_names(model),
-        lora_dropout=args.lora_dropout,
-        task_type="CAUSAL_LM",
-        modules_to_save=modules_to_save,
-    )
-    model = get_peft_model(model, lora_config)
-    model.print_trainable_parameters()
+    if not args.fulltune:
+        modules_to_save = ["audio_tower.proj"]
+        lora_config = LoraConfig(
+            r=args.lora_r,
+            lora_alpha=args.lora_alpha,
+            target_modules=["q_proj", "k_proj", "v_proj"], # find_all_linear_names(model),
+            lora_dropout=args.lora_dropout,
+            task_type="CAUSAL_LM",
+            modules_to_save=modules_to_save,
+        )
+        model = get_peft_model(model, lora_config)
+        model.print_trainable_parameters()
+    else:
+        for name, parameters in model.named_parameters():
+            if "visual" in name:
+                parameters.requires_grad = False
+            elif "audio_tower" in name:
+                parameters.requires_grad = False
     return model
 
 
@@ -125,6 +132,7 @@ def parse_args():
     p.add_argument("--lora_r", type=int, default=32)
     p.add_argument("--lora_alpha", type=int, default=64)
     p.add_argument("--lora_dropout", type=float, default=0.05)
+    p.add_argument("--fulltune", type=str2bool, default=False)
     p.add_argument("--merge_lora_on_save", type=str2bool, default=False)
 
     # Misc
