@@ -39,7 +39,6 @@ def str2bool(v: str) -> bool:
 def load_tokenizer(args):
     processor = Qwen2_5OmniProcessor.from_pretrained(
         args.model_name_or_path,
-        cache_dir="/research/milsrg1/user_workspace/gs534/cache",
     )
     return processor
 
@@ -63,7 +62,6 @@ def build_model(args):
         torch_dtype=torch.bfloat16,
         attn_implementation=attn_impl,
         trust_remote_code=True,
-        cache_dir="/research/milsrg1/user_workspace/gs534/cache"
     )
     model.config.use_cache = False
 

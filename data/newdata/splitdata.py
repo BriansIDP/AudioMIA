@@ -4,8 +4,8 @@ import json
 njobs = 24
 
 # dataname = "caption_asr_testset"
-# dataname = "per_audio_testset"
-dataname = "testdata_QA"
+# dataname = "testdata_capasr"
+dataname = "testdata_QA_train"
 with open("{}.json".format(dataname)) as fin:
     data = json.load(fin)
 

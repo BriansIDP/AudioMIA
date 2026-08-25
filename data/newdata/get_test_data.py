@@ -9,7 +9,7 @@ for setname, audios in split.items():
     for audio in audios:
         audio_to_split[audio] = setname
 
-with open("allmia_data_with_question_qwen3omni.json") as fin:
+with open("allmia_data_with_question_gemini3.json") as fin:
     data = json.load(fin)
 
 alldata = []
@@ -34,14 +34,15 @@ for datapiece in data:
     alldata.append(newpiece)
 
     for question in datapiece["questions"]:
-        if "question" not in question:
+        if not isinstance(question, dict):
             continue
         newpiece = {
             "audio": datapiece["audio"],
             "question": question["question"],
-            "answer": question["answer"]
+            "answer": question["answer"],
+            "label": 0 if setname == "train" else 1
         }
         traindata_qa.append(newpiece)
 
-with open("testdata_QA.json", "w") as fout:
+with open("testdata_QA_train.json", "w") as fout:
     json.dump(traindata_qa, fout, indent=4)

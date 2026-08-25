@@ -15,7 +15,9 @@ per_audio = True
 use_max = True
 refdata = None
 use_ratio = True
-score_topk = 10
+score_topk = 0
+start_topk = 0
+lse_tau = 0.2
 
 if len(sys.argv) > 2:
     reffile = sys.argv[2]
@@ -60,7 +62,7 @@ if refdata is not None:
         speed_factor = datapiece["pred"].pop("speed_factor", None)
         noise_snr = datapiece["pred"].pop("noise_snr", None)
         for metric, value in datapiece["pred"].items():
-            if metric == "pred" and len(value) > 1:
+            if metric == "pred" and len(value) > 1 and "precompute" in datapiece:
                 if useref:
                     ref_all_metrics[key]["rouge_1"] = process_score(datapiece["precompute"]["rouge_1_reftext"])
                     ref_all_metrics[key]["rouge_2"] = process_score(datapiece["precompute"]["rouge_2_reftext"])
@@ -75,7 +77,7 @@ if refdata is not None:
                     ref_all_metrics[key]["bert_P"] = process_score(datapiece["precompute"]["bert_P_predtext"])
                     ref_all_metrics[key]["bert_R"] = process_score(datapiece["precompute"]["bert_R_predtext"])
                     ref_all_metrics[key]["bert_F1"] = process_score(datapiece["precompute"]["bert_F1_predtext"])
-            else:
+            elif metric != "pred":
                 value = min(100000, max(-10000, value))
                 ref_all_metrics[key][metric] = value
 
@@ -94,7 +96,7 @@ for idx, datapiece in enumerate(tqdm(data)):
         key = datapiece["audio"] + datapiece["question"]
         audiokey = datapiece["audio"]
         if metric == "pred":
-            if len(value) > 1:
+            if len(value) > 1 and "precompute" in datapiece:
                 reftext = None
                 if "rouge_1" not in all_metrics:
                     all_metrics["rouge_1"] = []
@@ -187,8 +189,16 @@ if per_audio:
                 all_metrics_audio_max[metric] = []
             all_metrics_audio_mean[metric].append(sum(values) / len(values))
             if score_topk > 0:
-                local_score_topk = min(len(values), score_topk)
-                all_metrics_audio_max[metric].append(np.sort(values)[:local_score_topk].sum() / local_score_topk)
+                # local_score_topk = min(len(values), score_topk)
+                end = min(len(values), start_topk + score_topk)
+                start = start_topk
+                values = np.sort(values)
+                values_to_consider =  values[start:end]
+                all_metrics_audio_max[metric].append(values_to_consider.sum() / len(values_to_consider))
+            elif lse_tau > 0:
+                values = np.array(values)
+                log_sum_exp = lse_tau * np.log(np.sum(np.exp(np.clip(values / lse_tau, -500, 500))) / len(values) + 1e-5)
+                all_metrics_audio_max[metric].append(log_sum_exp)
             else:
                 all_metrics_audio_max[metric].append(min(values))
     if score_topk > 0 or use_max:
